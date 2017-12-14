@@ -127,7 +127,7 @@ namespace OriEnemyModNew {
 				"Numpad 0: Undo ALL kill persistence tags, allowing enemies to respawn again.");
 		}
 
-		void Update(float delta) {
+		void Update() {
 			if (Input.GetKeyDown(KeyCode.Keypad1) || Input.GetKeyDown(KeyCode.Keypad2) || Input.GetKeyDown(KeyCode.Keypad3) || Input.GetKeyDown(KeyCode.Keypad4) || Input.GetKeyDown(KeyCode.Keypad5) || Input.GetKeyDown(KeyCode.Keypad0)) {
 				if (!isDown) {
 					isDown = true;
