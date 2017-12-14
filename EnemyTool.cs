@@ -45,6 +45,7 @@ namespace OriEnemyModNew {
 		protected bool killsPersistent = false;
 		protected int lastEnemyCount = 0;
 		protected List<MoonGuid> deadGuids = new List<MoonGuid>();
+		protected List<Enemy> enemiesWithDamageHook = new List<Enemy>();
 		
 		protected void xLog(object o) {
 			Debug.Log("[OriEnemyOverride]: " + o.ToString());
@@ -100,17 +101,17 @@ namespace OriEnemyModNew {
 		protected void detectDeath() {
 			Enemy[] enemies = getAllLoadedEnemies();
 			foreach (Enemy e in enemies) {
-				e.DamageReciever.OnDeathEvent.Add(delegate (Damage dmg) {
-					//if ((dmg.Amount > e.DamageReciever.MaxHealth)) {
-						xLog(dmg.Sender);
+				if (!enemiesWithDamageHook.Contains(e)) {
+					enemiesWithDamageHook.Add(e);
+					e.DamageReciever.OnDeathEvent.Add(delegate (Damage dmg) {
 						if (killsPersistent) {
 							MoonGuid id = e.MoonGuid;
 							deadGuids.Add(id);
 							xLog("Perma-killed " + e);
 							xLog("Enemy GUID: " + id);
 						}
-					//}
-				});
+					});
+				}
 			}
 		}
 
@@ -148,6 +149,7 @@ namespace OriEnemyModNew {
 					} else if (Input.GetKeyDown(KeyCode.Keypad0)) {
 						xLog("All kill persistence data has been cleared.");
 						deadGuids.Clear();
+						enemiesWithDamageHook.Clear(); //Intially I thought I didn't have to clear this but if any enemies respawn they are reset.
 					}
 				}
 			} else {
